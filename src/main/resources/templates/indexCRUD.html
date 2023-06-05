@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Admin Page</title>
+</head>
+<body>
+<h1>ADMIN PAGE</h1>
+<div th:each="user : ${users}">
+    <a th:href="@{/admin/{id}(id=${user.getId()})}" th:text="${user}"></a>
+    <form th:method="GET" th:action="@{/admin/{id}/edit(id=${user.getId()})}">
+        <input type="submit" value="Изменить">
+    </form>
+    <form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}">
+        <input type="submit" value="Удалить">
+    </form>
+    <br>
+</div>
+<hr/>
+<a href="/admin/new">Добавить нового пользователя</a>
+<br>
+<a href="/user">Страница "/user"</a>
+
+<hr/>
+<div sec:authorize="isAuthenticated()">
+    <a th:href="@{/logout}">Log out</a>
+</div>
+<div sec:authorize="isAnonymous()">
+    <a th:href="@{/login}">Log in</a>
+</div>
+
+
+</body>
+</html>
