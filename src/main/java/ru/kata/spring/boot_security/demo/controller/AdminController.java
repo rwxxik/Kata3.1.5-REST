@@ -5,25 +5,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.service.MyUserService;
-import ru.kata.spring.boot_security.demo.service.PasswordEncoderUserService;
 
 import javax.validation.Valid;
-import java.sql.SQLIntegrityConstraintViolationException;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    final MyUserService userService;
-    final PasswordEncoderUserService passwordEncoderUserService;
+     private final MyUserService userService;
 
     @Autowired
-    public AdminController(MyUserService userService, PasswordEncoderUserService registrationUserService) {
+    public AdminController(MyUserService userService) {
         this.userService = userService;
-        this.passwordEncoderUserService = registrationUserService;
     }
 
     @GetMapping()
@@ -49,7 +44,7 @@ public class AdminController {
         if (bindingResult.hasErrors()) {
             return "newUserForm";
         }
-        passwordEncoderUserService.addUser(user);
+        userService.addUser(user);
         return "redirect:/admin";
     }
 
@@ -67,7 +62,7 @@ public class AdminController {
             return "editUserForm";
         }
 
-        passwordEncoderUserService.updateUser(id, user);
+        userService.updateUser(id, user);
         return "redirect:/admin";
     }
 

@@ -7,12 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import ru.kata.spring.boot_security.demo.service.MyUserService;
@@ -23,11 +18,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final MyUserService myUserService;
     private final SuccessUserHandler successUserHandler;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public WebSecurityConfig(MyUserService myUserService, SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig(MyUserService myUserService, SuccessUserHandler successUserHandler, PasswordEncoder passwordEncoder) {
         this.myUserService = myUserService;
         this.successUserHandler = successUserHandler;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
     }
 
     @Override
@@ -46,32 +48,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    // аутентификация inMemory
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("user")
-//                        .roles("ADMIN")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
-
-    @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserService);
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(myUserService).passwordEncoder(passwordEncoder);
     }
 
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public SpringSecurityDialect springSecurityDialect(){
-        return new SpringSecurityDialect();
-    }
 }
