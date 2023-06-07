@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>UserPage</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User page</title>
 </head>
 <body>
-<h1>User, welcome spring boot security page!</h1>
+<!--Верхний блок информации-->
+    <div class="container-fluid bg-dark text-white">
+        <div class="row">
+            <div class="col mt-3">
+                <p><b th:text="${user.email}"></b> with roles:
+                    <th:block th:each="authority, iter:${#authentication.getAuthorities()}">
+                          <span th:if="${authority.getAuthority().startsWith('ROLE_')}"
+                                th:text="${authority.getAuthority().replaceFirst('ROLE_', '')}"></span>
+                        <th:block th:if="${!iter.last}">, </th:block>
+                    </th:block>
+                </p>
+            </div>
+            <div class="col-md-auto mt-3">
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/logout}" class="text-muted">Logout</a>
+                </div>
+                <div sec:authorize="isAnonymous()">
+                    <a th:href="@{/login}" class="text-muted">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--Конец верхнего блока информации-->
+
+<h2>User information-page</h2>
+
 <div>
     <p th:text="${user}">user</p>
 </div>
@@ -17,5 +48,14 @@
     <a th:href="@{/login}">Log in</a>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
