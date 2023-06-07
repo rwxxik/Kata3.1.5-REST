@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MyUserService implements UserDetailsService {
+public class MyUserService implements UserDetailsService, UserCRUDService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,7 +38,7 @@ public class MyUserService implements UserDetailsService {
         return new MyUserDetails(user.get());
     }
 
-
+    @Override
     @Transactional
     public void addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -51,6 +51,7 @@ public class MyUserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    @Override
     @Transactional
     public void updateUser(int id, User updatedUser) {
         User userToBeUpdated = userRepository.getById(id);
@@ -62,15 +63,18 @@ public class MyUserService implements UserDetailsService {
         userRepository.save(userToBeUpdated);
     }
 
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public User getUser(int id) {
         Optional<User> userFromDb = userRepository.findById(id);
         return userFromDb.orElse(null);
     }
 
+    @Override
     @Transactional
     public void removeUser(int id) {
         userRepository.delete(getUser(id));
