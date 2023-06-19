@@ -10,18 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
-import ru.kata.spring.boot_security.demo.service.MyUserService;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final MyUserService myUserService;
+    private final UserServiceImpl myUserService;
     private final SuccessUserHandler successUserHandler;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public WebSecurityConfig(MyUserService myUserService, SuccessUserHandler successUserHandler, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserServiceImpl myUserService, SuccessUserHandler successUserHandler, PasswordEncoder passwordEncoder) {
         this.myUserService = myUserService;
         this.successUserHandler = successUserHandler;
         this.passwordEncoder = passwordEncoder;

@@ -4,58 +4,102 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
 </head>
 <body>
-<!--Верхний блок информации-->
-    <div class="container-fluid bg-dark text-white">
-        <div class="row">
-            <div class="col mt-3">
-                <p><b th:text="${user.email}"></b> with roles:
-                    <th:block th:each="authority, iter:${#authentication.getAuthorities()}">
-                          <span th:if="${authority.getAuthority().startsWith('ROLE_')}"
-                                th:text="${authority.getAuthority().replaceFirst('ROLE_', '')}"></span>
-                        <th:block th:if="${!iter.last}">, </th:block>
-                    </th:block>
-                </p>
+<!-- -----------------------------------Header start------------------------------------------------ -->
+<div class="container-fluid bg-light">
+    <div class="row  bg-dark text-white">
+        <div class="col mt-3">
+            <p><b th:text="${user.email}"></b> with roles:
+                <span th:text="${user.getStringRoles()}">Roles</span>
+            </p>
+        </div>
+        <div class="col-auto mt-3">
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/logout}" class="text-muted">Logout</a>
             </div>
-            <div class="col-md-auto mt-3">
-                <div sec:authorize="isAuthenticated()">
-                    <a th:href="@{/logout}" class="text-muted">Logout</a>
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="text-muted">Login</a>
+            </div>
+        </div>
+    </div>
+    <!-- -----------------------------------Header end------------------------------------------------ -->
+    <div class="row">
+        <div class="col">
+            <br>
+        </div>
+    </div>
+    <!-- -----------------------------------Left panel start------------------------------------------------ -->
+    <div class="row">
+        <div class="col-2 bg-white">
+            <div class="d-grid gap-2 mt-2">
+                <a th:each="authority : ${#authentication.getAuthorities()}"
+                   th:if="${authority.getAuthority().contains('ADMIN')}"
+                   class="btn btn-primary" href="/admin" role="button">
+                    Admin
+                </a>
+                <a th:each="authority : ${#authentication.getAuthorities()}"
+                   th:if="${authority.getAuthority().contains('USER')}"
+                   class="btn btn-primary" href="/user" role="button">
+                    User
+                </a>
+            </div>
+        </div>
+        <!-- -----------------------------------Left panel end------------------------------------------------ -->
+        <div class="col vh-100" style="padding-left: 40px; padding-right: 40px">
+            <div class="row">
+                <div class="col">
+                    <h1>User information page</h1>
                 </div>
-                <div sec:authorize="isAnonymous()">
-                    <a th:href="@{/login}" class="text-muted">Login</a>
+            </div>
+            <div class="row">
+                <div class="col border">
+                    <div class="row border-bottom">
+                        <div class="col" style="padding-top: 10px; padding-bottom: 10px; padding-left:20px;">
+                            <h4>About user</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col bg-white" style="padding: 20px 20px;">
+                            <table class="table table-striped table-borderless">
+                                <thead>
+                                <tr class="border-top border-bottom">
+                                    <th scope="col">ID</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Roles</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td th:text="${user.getId()}">ID</td>
+                                    <td th:text="${user.getFirstName()}">First Name</td>
+                                    <td th:text="${user.getLastName()}">Last Name</td>
+                                    <td th:text="${user.getEmail()}">Email</td>
+                                    <td th:text="${user.getUsername()}">Username</td>
+                                    <td th:text="${user.getStringRoles()}">Roles</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-<!--Конец верхнего блока информации-->
-
-<h2>User information-page</h2>
-
-<div>
-    <p th:text="${user}">user</p>
 </div>
 
-<hr/>
-<div sec:authorize="isAuthenticated()">
-    <a th:href="@{/logout}">Log out</a>
-</div>
-<div sec:authorize="isAnonymous()">
-    <a th:href="@{/login}">Log in</a>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
@@ -15,28 +16,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "username", unique = true)
-    @NotBlank(message = "Поле не может быть пустым")
-    @Size(min = 2, max = 30, message = "Имя должно быть от 2 до 30 символов")
     private String username;
     @Column(name = "password")
-    @NotBlank(message = "Пароль не может быть пустым")
     private String password;
     @Column(name = "firstName")
-    @NotBlank(message = "Имя не может быть пустым")
     private String firstName;
     @Column(name = "lastName")
-    @NotBlank(message = "Фамилия не может быть пустым")
     private String lastName;
     @Column(name = "email")
-    @NotBlank(message = "Емейл не может быть пустым")
-    @Email(message = "Неверный формат email")
     private String email;
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
-    @Transient
-    private boolean adminCheckBox;
-    @Transient
-    private boolean userCheckBox;
 
     {
         roles = new HashSet<>();
@@ -111,23 +101,14 @@ public class User {
         roles.add(role);
     }
 
-
-    public boolean isAdminCheckBox() {
-        return adminCheckBox;
+    public String getStringRoles(){
+        String delim = ", ";
+        String result = roles.stream()
+                .map(x ->x.getName())
+                .map(x->x.replace("ROLE_"," "))
+                .collect(Collectors.joining(delim));
+        return result;
     }
-
-    public void setAdminCheckBox(boolean adminCheckBox) {
-        this.adminCheckBox = adminCheckBox;
-    }
-
-    public boolean isUserCheckBox() {
-        return userCheckBox;
-    }
-
-    public void setUserCheckBox(boolean userCheckBox) {
-        this.userCheckBox = userCheckBox;
-    }
-
     @Override
     public String toString() {
         return "User{" +

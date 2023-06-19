@@ -7,23 +7,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
-import ru.kata.spring.boot_security.demo.security.MyUserDetails;
+import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MyUserService implements UserDetailsService, UserCRUDService {
+public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public MyUserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -35,19 +34,13 @@ public class MyUserService implements UserDetailsService, UserCRUDService {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return new MyUserDetails(user.get());
+        return new UserDetailsImpl(user.get());
     }
 
     @Override
     @Transactional
     public void addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.isUserCheckBox()) {
-            user.addRole(new Role(1, "ROLE_USER"));
-        }
-        if (user.isAdminCheckBox()) {
-            user.addRole(new Role(2, "ROLE_ADMIN"));
-        }
         userRepository.save(user);
     }
 

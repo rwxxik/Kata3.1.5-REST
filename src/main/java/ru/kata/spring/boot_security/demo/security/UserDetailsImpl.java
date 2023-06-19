@@ -6,11 +6,11 @@ import ru.kata.spring.boot_security.demo.entity.User;
 
 import java.util.*;
 
-public class MyUserDetails implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private final User user;
 
-    public MyUserDetails(User user) {
+    public UserDetailsImpl(User user) {
         this.user = user;
     }
 

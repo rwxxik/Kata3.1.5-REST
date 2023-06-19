@@ -7,18 +7,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.kata.spring.boot_security.demo.security.MyUserDetails;
-import ru.kata.spring.boot_security.demo.service.MyUserService;
+import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 @Controller
 public class UsersController {
 
-    private final MyUserService userService;
+    private final UserServiceImpl userService;
     private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public UsersController(MyUserService userService, PasswordEncoder passwordEncoder) {
+    public UsersController(UserServiceImpl userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -26,7 +26,7 @@ public class UsersController {
     @GetMapping("/user")
     public String showUser(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         model.addAttribute(userDetails.getUser());
         return "user";
     }
