@@ -72,4 +72,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void removeUser(int id) {
         userRepository.delete(getUser(id));
     }
+
+    public User getUserByUsername(String username) {
+        Optional<User> userFromDb = userRepository.findByUsername(username);
+        return userFromDb.orElse(null);
+    }
 }

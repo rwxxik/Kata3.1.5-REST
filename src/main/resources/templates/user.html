@@ -12,21 +12,13 @@
           crossorigin="anonymous">
 </head>
 <body>
-<!-- -----------------------------------Header start------------------------------------------------ -->
 <div class="container-fluid bg-light">
+    <!-- -----------------------------------Header start------------------------------------------------ -->
     <div class="row  bg-dark text-white">
-        <div class="col mt-3">
-            <p><b th:text="${user.email}"></b> with roles:
-                <span th:text="${user.getStringRoles()}">Roles</span>
-            </p>
+        <div class="col mt-3" id="headerData">
         </div>
         <div class="col-auto mt-3">
-            <div sec:authorize="isAuthenticated()">
-                <a th:href="@{/logout}" class="text-muted">Logout</a>
-            </div>
-            <div sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="text-muted">Login</a>
-            </div>
+            <a href="/logout" class="text-muted">Logout</a>
         </div>
     </div>
     <!-- -----------------------------------Header end------------------------------------------------ -->
@@ -38,18 +30,18 @@
     <!-- -----------------------------------Left panel start------------------------------------------------ -->
     <div class="row">
         <div class="col-2 bg-white">
-            <div class="d-grid gap-2 mt-2">
-                <a th:each="authority : ${#authentication.getAuthorities()}"
-                   th:if="${authority.getAuthority().contains('ADMIN')}"
-                   class="btn btn-primary" href="/admin" role="button">
-                    Admin
-                </a>
-                <a th:each="authority : ${#authentication.getAuthorities()}"
-                   th:if="${authority.getAuthority().contains('USER')}"
-                   class="btn btn-primary" href="/user" role="button">
-                    User
-                </a>
-            </div>
+            <ul class="nav nav-pills flex-column">
+                <div sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/admin}">Admin</a>
+                    </li>
+                </div>
+                <div sec:authorize="hasRole('USER')">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" th:href="@{/user}">User</a>
+                    </li>
+                </div>
+            </ul>
         </div>
         <!-- -----------------------------------Left panel end------------------------------------------------ -->
         <div class="col vh-100" style="padding-left: 40px; padding-right: 40px">
@@ -67,7 +59,7 @@
                     </div>
                     <div class="row">
                         <div class="col bg-white" style="padding: 20px 20px;">
-                            <table class="table table-striped table-borderless">
+                            <table class="table table-striped table-borderless" id="userTable">
                                 <thead>
                                 <tr class="border-top border-bottom">
                                     <th scope="col">ID</th>
@@ -79,14 +71,6 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td th:text="${user.getId()}">ID</td>
-                                    <td th:text="${user.getFirstName()}">First Name</td>
-                                    <td th:text="${user.getLastName()}">Last Name</td>
-                                    <td th:text="${user.getEmail()}">Email</td>
-                                    <td th:text="${user.getUsername()}">Username</td>
-                                    <td th:text="${user.getStringRoles()}">Roles</td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -97,9 +81,9 @@
     </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="/js/user.js" th:src="@{/js/user.js}"></script>
 </body>
 </html>

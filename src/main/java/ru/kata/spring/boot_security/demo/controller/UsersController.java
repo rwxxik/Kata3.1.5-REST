@@ -7,8 +7,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+
+import java.util.List;
 
 @Controller
 public class UsersController {
@@ -30,5 +34,11 @@ public class UsersController {
         model.addAttribute(userDetails.getUser());
         return "user";
     }
+
+    @GetMapping("/")
+    public String showIndex() {
+        return "index";
+    }
+
 
 }

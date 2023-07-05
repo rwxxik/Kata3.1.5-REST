@@ -105,7 +105,7 @@ public class User {
         String delim = ", ";
         String result = roles.stream()
                 .map(x ->x.getName())
-                .map(x->x.replace("ROLE_"," "))
+                .map(x->x.replace("ROLE_",""))
                 .collect(Collectors.joining(delim));
         return result;
     }
