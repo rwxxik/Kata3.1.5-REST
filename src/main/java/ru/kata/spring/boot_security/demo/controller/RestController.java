@@ -12,6 +12,8 @@ import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -20,6 +22,7 @@ public class RestController {
 
     private final UserServiceImpl userService;
     private final RoleService roleService;
+
 
     @Autowired
     public RestController(UserServiceImpl userService, RoleServiceImpl roleService) {

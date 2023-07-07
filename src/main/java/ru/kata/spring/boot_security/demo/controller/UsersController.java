@@ -37,7 +37,7 @@ public class UsersController {
 
     @GetMapping("/")
     public String showIndex() {
-        return "index";
+        return "redirect:/login";
     }
 
 
