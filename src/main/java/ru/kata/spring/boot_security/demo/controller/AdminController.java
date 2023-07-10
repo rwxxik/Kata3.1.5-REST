@@ -18,44 +18,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-     private final UserServiceImpl userService;
-     private final RoleServiceImpl roleService;
-
-    @Autowired
-    public AdminController(UserServiceImpl userService, RoleServiceImpl roleService) {
-        this.userService = userService;
-        this.roleService = roleService;
-    }
 
     @GetMapping()
-    public String getAdminPage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        model.addAttribute("currentUser", userDetails.getUser());
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("newUser", new User());
-        List<Role> allRoles = roleService.getAllRoles();
-        model.addAttribute("allRoles", allRoles);
+    public String getAdminPage() {
         return "admin";
-    }
-
-    @PostMapping("/new")
-    public String addUser(@ModelAttribute("user") User user) {
-        userService.addUser(user);
-        return "redirect:/admin";
-    }
-
-    @PatchMapping("/{id}")
-    public String updateUser(@ModelAttribute("user") User user,
-                             @PathVariable("id") int id) {
-
-        userService.updateUser(id, user);
-        return "redirect:/admin";
-    }
-
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable("id") int id) {
-        userService.removeUser(id);
-        return "redirect:/admin";
     }
 }

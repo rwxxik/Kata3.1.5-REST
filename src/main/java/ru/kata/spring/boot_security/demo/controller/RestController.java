@@ -1,33 +1,44 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.exception_handling.UserNotFoundException;
-import ru.kata.spring.boot_security.demo.security.UserDetailsImpl;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 public class RestController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final RoleService roleService;
 
 
     @Autowired
-    public RestController(UserServiceImpl userService, RoleServiceImpl roleService) {
+    public RestController(UserService userService, RoleServiceImpl roleService) {
         this.userService = userService;
         this.roleService = roleService;
+    }
+
+    @PostConstruct
+    void init() {
+        User initUser = new User();
+        initUser.setFirstName("init");
+        initUser.setLastName("init");
+        initUser.setEmail("init@init.com");
+        initUser.setUsername("init");
+        initUser.setPassword("init");
+        initUser.addRole(roleService.findByName("ROLE_USER"));
+        initUser.addRole(roleService.findByName("ROLE_ADMIN"));
+        if (userService.getUserByUsername(initUser.getUsername()) == null) {
+            userService.addUser(initUser);
+        }
     }
 
     @GetMapping("/users")
@@ -66,8 +77,6 @@ public class RestController {
 
     @GetMapping("/user")
     public User getCurrentAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return userService.getUserByUsername(userDetails.getUsername());
+        return userService.getUserByAuthentication(SecurityContextHolder.getContext().getAuthentication());
     }
 }
